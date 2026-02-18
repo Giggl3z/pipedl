@@ -330,8 +330,10 @@
     }
 
     .status-chip.running { color: var(--accent); border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); }
+    .status-chip.queued { color: #fbbf24; border-color: color-mix(in srgb, #fbbf24 45%, var(--line)); }
     .status-chip.done { color: var(--good); border-color: color-mix(in srgb, var(--good) 45%, var(--line)); }
     .status-chip.error { color: var(--bad); border-color: color-mix(in srgb, var(--bad) 45%, var(--line)); }
+    .status-chip.canceled { color: #fca5a5; border-color: color-mix(in srgb, #fca5a5 45%, var(--line)); }
 
     .console {
       border: 1px solid var(--line);
@@ -368,6 +370,43 @@
       border-bottom: 1px solid var(--line);
       font-size: 12px;
       align-items: center;
+      cursor: pointer;
+      position: relative;
+      transition: background .12s ease, transform .12s ease;
+    }
+
+    .task-row::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 6px;
+      bottom: 6px;
+      width: 3px;
+      border-radius: 999px;
+      background: transparent;
+      opacity: .9;
+    }
+
+    .task-row:hover {
+      background: color-mix(in srgb, var(--panel-2) 45%, transparent);
+      transform: translateX(1px);
+    }
+
+    .task-row.running::before {
+      background: color-mix(in srgb, var(--accent) 75%, white);
+    }
+
+    .task-row.queued::before {
+      background: color-mix(in srgb, #fbbf24 70%, white);
+    }
+
+    .task-row.done::before {
+      background: color-mix(in srgb, var(--good) 75%, white);
+    }
+
+    .task-row.error::before,
+    .task-row.canceled::before {
+      background: color-mix(in srgb, var(--bad) 80%, white);
     }
 
     .queue-pill {
@@ -1016,7 +1055,7 @@
 
       items.forEach(t => {
         const row = document.createElement('div');
-        row.className = 'task-row';
+        row.className = `task-row ${t.status || ''}`;
 
         const left = document.createElement('div');
         const q = t.queue_position ? ` · q#${t.queue_position}` : '';
