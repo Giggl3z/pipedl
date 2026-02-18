@@ -22,6 +22,8 @@ Format inspired by [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Task list visual polish: status icons, hover motion, and running pulse accent.
 - Status chip tooltips now show queue position + started/finished timestamps.
 - New PipeDL SVG logo asset and refreshed README/docs visual layout.
+- UI quick actions for URL input: Paste from clipboard + Clear.
+- Keyboard shortcuts in web UI: `Ctrl/Cmd + Enter` to start and `Esc` to close the exact-format modal.
 - Extension popup autofills URL from active YouTube tab.
 - Extension badge now shows active queued/running task count.
 
@@ -31,6 +33,7 @@ Format inspired by [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Web UI advanced options now include “Skip duplicates (archive)”.
 - Download options now accept `exactFormat` for precise stream selection.
 - UI now persists mode and post-download behavior preferences.
+- Top toolbar is now sticky with glass styling for easier access while scrolling.
 
 ### Fixed
 - Fixed queue deadlock in `/api/download` caused by nested locking during task trimming.
