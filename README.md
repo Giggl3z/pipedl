@@ -21,9 +21,9 @@ cd pipedl
 
 Then open **http://localhost:5000** and drop your first URL.
 
-### Optional: Tray App (recommended for non-technical users)
+### Optional: pipedl-server app (recommended for non-technical users)
 
-PipeDL also includes a tray controller app with:
+PipeDL also includes a server controller app with:
 - always-on system tray icon
 - live server status (online/offline)
 - start/shutdown button

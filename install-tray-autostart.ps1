@@ -1,7 +1,7 @@
 $ErrorActionPreference = 'Stop'
 Set-Location $PSScriptRoot
 
-$taskName = 'PipeDL Tray'
+$taskName = 'pipedl-server'
 $runPath = Join-Path $PSScriptRoot 'run-tray.ps1'
 
 if (-not (Test-Path $runPath)) {

@@ -21,7 +21,7 @@ LOG_PATH = os.path.join(BASE_DIR, "pipedl-server.log")
 class PipeDLTrayApp:
     def __init__(self):
         self.root = tk.Tk()
-        self.root.title("PipeDL Control")
+        self.root.title("pipedl-server")
         self.root.geometry("420x260")
         self.root.resizable(False, False)
         self.root.protocol("WM_DELETE_WINDOW", self.hide_window)
@@ -40,10 +40,10 @@ class PipeDLTrayApp:
         frame = ttk.Frame(self.root, padding=14)
         frame.pack(fill="both", expand=True)
 
-        title = ttk.Label(frame, text="PipeDL", font=("Segoe UI", 18, "bold"))
+        title = ttk.Label(frame, text="pipedl-server", font=("Segoe UI", 16, "bold"))
         title.pack(anchor="w")
 
-        subtitle = ttk.Label(frame, text="Tray server controller", font=("Segoe UI", 10))
+        subtitle = ttk.Label(frame, text="server controller", font=("Segoe UI", 10))
         subtitle.pack(anchor="w", pady=(0, 10))
 
         status = ttk.Label(frame, textvariable=self.status_var, font=("Segoe UI", 11))
@@ -77,7 +77,7 @@ class PipeDLTrayApp:
             pystray.MenuItem("Start/Stop Server", self.toggle_server),
             pystray.MenuItem("Exit", self.exit_app),
         )
-        self.icon = pystray.Icon("PipeDL", self.create_icon_image(), "PipeDL", menu)
+        self.icon = pystray.Icon("pipedl-server", self.create_icon_image(), "pipedl-server", menu)
         threading.Thread(target=self.icon.run, daemon=True).start()
 
     def is_server_up(self):
@@ -168,7 +168,7 @@ class PipeDLTrayApp:
 
     def open_logs_window(self):
         win = tk.Toplevel(self.root)
-        win.title("PipeDL Console Logs")
+        win.title("pipedl-server logs")
         win.geometry("780x460")
 
         text = tk.Text(win, wrap="word", font=("Consolas", 10))

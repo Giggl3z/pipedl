@@ -1,7 +1,7 @@
 $ErrorActionPreference = 'Stop'
 Set-Location $PSScriptRoot
 
-Write-Host '🧩 Starting PipeDL Tray...' -ForegroundColor Cyan
+Write-Host '🧩 Starting pipedl-server...' -ForegroundColor Cyan
 
 $guiPath = Join-Path $PSScriptRoot 'yt-dlp-gui'
 if (-not (Test-Path $guiPath)) {

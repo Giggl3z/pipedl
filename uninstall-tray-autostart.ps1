@@ -1,5 +1,5 @@
 $ErrorActionPreference = 'SilentlyContinue'
-$taskName = 'PipeDL Tray'
+$taskName = 'pipedl-server'
 
 if (Get-ScheduledTask -TaskName $taskName) {
   Unregister-ScheduledTask -TaskName $taskName -Confirm:$false

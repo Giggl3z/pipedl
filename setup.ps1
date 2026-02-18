@@ -17,7 +17,7 @@ python -m pip install -r requirements.txt
 Write-Host ''
 Write-Host '✅ Setup complete!' -ForegroundColor Green
 
-$startupChoice = Read-Host 'Do you want PipeDL Tray to auto-start when you log in? (Y/N)'
+$startupChoice = Read-Host 'Do you want pipedl-server to auto-start when you log in? (Y/N)'
 if ($startupChoice -match '^(y|yes)$') {
   try {
     & (Join-Path $PSScriptRoot 'install-tray-autostart.ps1')
@@ -32,5 +32,5 @@ if ($startupChoice -match '^(y|yes)$') {
 
 Write-Host 'Next steps:' -ForegroundColor Green
 Write-Host '1) Run backend:  powershell -ExecutionPolicy Bypass -File .\run.ps1'
-Write-Host '2) Or run tray app: powershell -ExecutionPolicy Bypass -File .\run-tray.ps1'
+Write-Host '2) Or run server app: powershell -ExecutionPolicy Bypass -File .\run-tray.ps1'
 Write-Host '3) Load extension: brave://extensions -> Developer mode -> Load unpacked -> yt-dlp-brave-extension'

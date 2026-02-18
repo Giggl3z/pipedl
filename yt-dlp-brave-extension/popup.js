@@ -113,7 +113,7 @@ async function checkServerStatus() {
   } catch {
     setServerChip('offline', 'server: offline');
     setBackendControlsEnabled(false);
-    setHint('PipeDL server is offline. Start the tray app/server first.');
+    setHint('pipedl-server is offline. Start the server app first.');
     return false;
   }
 }

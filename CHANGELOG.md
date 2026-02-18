@@ -33,6 +33,7 @@ Format inspired by [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   - `uninstall-tray-autostart.ps1`
 - `setup.ps1` now asks whether to enable tray auto-start at login during setup.
 - Tray app now detects external server instances and reflects status correctly (won’t spawn duplicate server or attempt to stop unmanaged process).
+- Tray/server app naming simplified to `pipedl-server` across window title, startup task, and user-facing hints.
 - Extension popup autofills URL from active YouTube tab.
 - Extension popup now shows live backend server status (online/offline), disables backend actions when offline, and surfaces a clear server-offline hint.
 - Extension badge now shows active queued/running task count.
