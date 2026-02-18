@@ -62,10 +62,17 @@ git clone https://github.com/Giggl3z/pipedl.git
 cd pipedl
 ```
 
-Or update an existing local copy:
+Update an existing local copy:
 
 ```bash
 git pull
+```
+
+Quick pre-checks:
+
+```powershell
+python --version
+git --version
 ```
 
 ---
@@ -84,9 +91,10 @@ powershell -ExecutionPolicy Bypass -File .\setup.ps1
 powershell -ExecutionPolicy Bypass -File .\run.ps1
 ```
 
-Then open:
+### 3) Use it
 
-- `http://localhost:5000`
+- Open `http://localhost:5000`
+- Or open a YouTube video page and click **PipeDL** in action row
 
 Default output folder:
 
