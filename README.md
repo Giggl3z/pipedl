@@ -4,12 +4,9 @@
   <img src="docs/assets/pipedl-logo-bold.svg" alt="PipeDL logo" width="620" />
 </p>
 
-![Python](https://img.shields.io/badge/Python-3.10%2B-2563EB)
-![Brave Extension](https://img.shields.io/badge/Brave-MV3-F97316)
-![License](https://img.shields.io/badge/License-MIT-16A34A)
-![Status](https://img.shields.io/badge/Status-Active-22C55E)
+![Python](https://img.shields.io/badge/Python-3.10%2B-2563EB) ![Brave Extension](https://img.shields.io/badge/Brave-MV3-F97316) ![License](https://img.shields.io/badge/License-MIT-16A34A) ![Status](https://img.shields.io/badge/Status-Active-22C55E)
 
-> **PipeDL** is a bold, modern `yt-dlp` toolkit: local web studio + Brave extension + YouTube in-page actions.
+> **PipeDL** is a bold `yt-dlp` command studio — fast presets, exact format control, and queue-safe downloads from one clean interface.
 
 ---
 
@@ -22,7 +19,7 @@ cd pipedl
 .\run.ps1
 ```
 
-Open: **http://localhost:5000**
+Then open **http://localhost:5000** and drop your first URL.
 
 ---
 
