@@ -1,35 +1,52 @@
-# 🩺 Troubleshooting
+# 🩺 PipeDL Troubleshooting
 
 Common issues and quick fixes.
 
 ---
 
-## ❌ "Fetch failed" when clicking PipeDL on YouTube
+## ❌ "Fetch failed" from YouTube button or popup
 
-1. Confirm backend is running:
-   ```bash
+1. Make sure backend is running:
+   ```powershell
    cd yt-dlp-gui
    python app.py
    ```
-2. In extension options, verify backend URL (`http://localhost:5000`)
+2. Open extension options and verify backend URL (`http://localhost:5000`)
 3. Reload extension in `brave://extensions`
-4. Refresh YouTube page
+4. Refresh YouTube tab
 
 ---
 
 ## 👀 PipeDL button not visible on YouTube
 
 - Ensure extension is enabled
-- Reload extension + refresh tab
-- Test on a valid video route (`/watch` or `/shorts`)
+- Reload extension + refresh video tab
+- Test on valid routes: `/watch` or `/shorts`
 
 ---
 
-## 🚫 GitHub push rejected (large files)
+## ⏳ Task stuck in queued
 
-GitHub blocks big media files in commits/history.
+- Increase concurrency in web UI (Queue Controls)
+- Check if a running task is hung, then cancel it
+- Restart backend if needed
 
-Make sure `.gitignore` includes:
+---
+
+## 🐍 `yt-dlp` not found / command fails
+
+```powershell
+python -m pip install --upgrade yt-dlp
+```
+
+Restart backend after update.
+
+---
+
+## 🚫 GitHub push rejected (large media files)
+
+Do not commit downloaded media.
+Ensure `.gitignore` includes:
 
 ```gitignore
 yt-dlp-gui/downloads/
@@ -39,25 +56,14 @@ yt-dlp-gui/downloads/
 *.webm
 ```
 
-If files were already committed, rewrite history or create a clean repo history before pushing.
+If large files were already committed, clean history before pushing.
 
 ---
 
-## 🐍 `yt-dlp` not found
+## 📂 Wrong output folder
 
-Install and restart backend:
-
-```bash
-python -m pip install yt-dlp
-python app.py
-```
-
----
-
-## 📂 Download location check
-
-Current default path:
+Default output path:
 
 `C:\Users\<you>\Downloads\PipeDL`
 
-Change it in `yt-dlp-gui/app.py` (`DOWNLOAD_DIR`) if needed.
+To change it, edit `yt-dlp-gui/app.py` (`DOWNLOAD_DIR`) and restart backend.

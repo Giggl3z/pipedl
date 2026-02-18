@@ -1,6 +1,6 @@
-# 🛠 Setup Guide
+# 🛠 PipeDL Setup Guide
 
-Follow this once to get PipeDL running end-to-end.
+Use this guide for a clean first-time setup.
 
 ---
 
@@ -9,56 +9,64 @@ Follow this once to get PipeDL running end-to-end.
 - Windows 10/11
 - Python 3.10+
 - Brave Browser
-- Internet connection
+- Internet access
 
 ---
 
-## 1) Start backend (`yt-dlp-gui`)
+## 1) Install backend dependencies
 
-```bash
+```powershell
 cd yt-dlp-gui
-python -m pip install flask yt-dlp
+python -m pip install -r requirements.txt
+```
+
+---
+
+## 2) Start backend
+
+```powershell
 python app.py
 ```
 
-Expected: Flask server running at `http://localhost:5000`.
+Expected:
+- Web app at `http://localhost:5000`
+- Downloads saved to `C:\Users\<you>\Downloads\PipeDL`
 
 ---
 
-## 2) Load extension (`yt-dlp-brave-extension`)
+## 3) Load extension in Brave
 
 1. Open `brave://extensions`
-2. Enable **Developer mode**
+2. Turn on **Developer mode**
 3. Click **Load unpacked**
-4. Choose `yt-dlp-brave-extension`
-5. (Optional) Pin the extension
+4. Select folder: `yt-dlp-brave-extension`
 
 ---
 
-## 3) Configure backend URL (optional)
+## 4) Configure extension (optional)
 
-- Open extension popup
-- Click ⚙ (Options)
-- Set backend URL (default: `http://localhost:5000`)
-
----
-
-## 4) First download test
-
-1. Open a YouTube video (`/watch` or `/shorts`)
-2. Click **PipeDL** near the action buttons
-3. Choose format
-4. Press **Download**
-
-Success behavior:
-- Task is queued
-- File saves to `Downloads\PipeDL`
+- Open PipeDL extension popup
+- Click ⚙ Options
+- Confirm backend URL is `http://localhost:5000`
 
 ---
 
-## 5) Keep dependencies fresh
+## 5) First download test
 
-```bash
+1. Open any YouTube video page (`/watch` or `/shorts`)
+2. Click **PipeDL** in action row
+3. Pick format and click **Download**
+
+If successful:
+- Task appears in PipeDL UI
+- Status moves `queued -> running -> done`
+- File appears in `Downloads\PipeDL`
+
+---
+
+## 🔄 Update dependencies
+
+```powershell
 cd yt-dlp-gui
-python -m pip install --upgrade yt-dlp flask
+python -m pip install --upgrade -r requirements.txt
 ```

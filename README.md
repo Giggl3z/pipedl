@@ -1,6 +1,9 @@
-# 🚀 PipeDL
+# PipeDL
 
-![Name](https://img.shields.io/badge/Name-PipeDL-6D28D9)
+<p align="left">
+  <img src="docs/assets/pipedl-logo.svg" alt="PipeDL logo" width="560" />
+</p>
+
 ![Python](https://img.shields.io/badge/Python-3.10%2B-2563EB)
 ![Brave Extension](https://img.shields.io/badge/Brave-MV3-F97316)
 ![License](https://img.shields.io/badge/License-MIT-16A34A)
