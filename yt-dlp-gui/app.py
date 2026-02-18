@@ -98,6 +98,46 @@ def running_count() -> int:
     return sum(1 for t in TASKS.values() if t.get("status") == "running")
 
 
+def parse_progress_from_log(lines: list[str]) -> dict:
+    percent = None
+    speed = None
+    eta = None
+    size = None
+
+    for line in reversed(lines or []):
+      if "[download]" not in line:
+          continue
+
+      m_pct = re.search(r"(\d{1,3}(?:\.\d+)?)%", line)
+      if m_pct and percent is None:
+          try:
+              percent = max(0.0, min(100.0, float(m_pct.group(1))))
+          except Exception:
+              percent = None
+
+      m_speed = re.search(r"at\s+([^\s]+/s)", line)
+      if m_speed and speed is None:
+          speed = m_speed.group(1)
+
+      m_eta = re.search(r"ETA\s+([^\s]+)", line)
+      if m_eta and eta is None:
+          eta = m_eta.group(1)
+
+      m_size = re.search(r"of\s+([^\s]+)", line)
+      if m_size and size is None:
+          size = m_size.group(1)
+
+      if percent is not None and (speed is not None or eta is not None or size is not None):
+          break
+
+    return {
+        "percent": percent,
+        "speed": speed,
+        "eta": eta,
+        "size": size,
+    }
+
+
 def build_command(url: str, fmt: str, options: dict) -> list[str]:
     base_cmd = [sys.executable, "-m", "yt_dlp"]
 
@@ -340,6 +380,7 @@ def api_status(task_id):
         if not task:
             return jsonify({"error": "Task not found"}), 404
 
+        progress = parse_progress_from_log(task.get("log") or [])
         return jsonify(
             {
                 "task_id": task["task_id"],
@@ -352,6 +393,7 @@ def api_status(task_id):
                 "started_at": task.get("started_at"),
                 "finished_at": task["finished_at"],
                 "pid": task["pid"],
+                "progress": progress,
             }
         )
 
@@ -362,8 +404,10 @@ def api_tasks():
         items = list(TASKS.values())
 
     items.sort(key=lambda t: t.get("created_at", ""), reverse=True)
-    return jsonify(
-        [
+    out = []
+    for t in items[:80]:
+        progress = parse_progress_from_log(t.get("log") or [])
+        out.append(
             {
                 "task_id": t["task_id"],
                 "status": t["status"],
@@ -373,10 +417,10 @@ def api_tasks():
                 "created_at": t["created_at"],
                 "started_at": t.get("started_at"),
                 "finished_at": t["finished_at"],
+                "progress": progress,
             }
-            for t in items[:80]
-        ]
-    )
+        )
+    return jsonify(out)
 
 
 @app.route("/api/cancel/<task_id>", methods=["POST"])
@@ -413,6 +457,40 @@ def api_cancel(task_id):
 
         QUEUE_COND.notify_all()
         return jsonify({"ok": True, "status": "canceled"})
+
+
+@app.route("/api/retry-failed", methods=["POST"])
+def api_retry_failed():
+    created = []
+
+    with QUEUE_COND:
+        failed_tasks = [
+            t for t in TASKS.values()
+            if t.get("status") in ("error", "canceled")
+        ]
+
+        for source in failed_tasks:
+            task_id = str(uuid.uuid4())
+            task = {
+                "task_id": task_id,
+                "status": "queued",
+                "log": [f"Task queued (retry of {source['task_id'][:8]})."],
+                "url": source["url"],
+                "format": source["format"],
+                "created_at": now_iso(),
+                "started_at": None,
+                "finished_at": None,
+                "pid": None,
+                "options": dict(source.get("options") or {}),
+            }
+            TASKS[task_id] = task
+            TASK_QUEUE.append(task_id)
+            created.append(task_id)
+
+        trim_tasks_if_needed_locked()
+        QUEUE_COND.notify_all()
+
+    return jsonify({"ok": True, "created": len(created), "task_ids": created})
 
 
 @app.route("/api/settings", methods=["GET", "POST"])

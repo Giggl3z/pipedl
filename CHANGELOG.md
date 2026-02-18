@@ -24,6 +24,8 @@ Format inspired by [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - New PipeDL SVG logo asset and refreshed README/docs visual layout.
 - UI quick actions for URL input: Paste from clipboard + Clear.
 - Keyboard shortcuts in web UI: `Ctrl/Cmd + Enter` to start and `Esc` to close the exact-format modal.
+- Task list filters (all/running/queued/done/error/canceled) and one-click “Retry Failed” action.
+- Task rows now show parsed progress details (percent/speed/ETA) when available.
 - Extension popup autofills URL from active YouTube tab.
 - Extension badge now shows active queued/running task count.
 
@@ -33,6 +35,7 @@ Format inspired by [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Web UI advanced options now include “Skip duplicates (archive)”.
 - Download options now accept `exactFormat` for precise stream selection.
 - UI now persists mode and post-download behavior preferences.
+- UI now persists task filter preference.
 - Top toolbar is now sticky with glass styling for easier access while scrolling.
 - Root README copy/style refreshed to better match the bold PipeDL brand tone while keeping structure intact.
 - README top section polished (hero line, compact badge row, stronger launch CTA copy).

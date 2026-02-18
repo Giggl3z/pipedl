@@ -489,6 +489,22 @@
     .task-url { color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .task-meta { color: var(--muted); font-size: 11px; margin-top: 3px; }
 
+    .task-progress {
+      margin-top: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--panel-2) 70%, black);
+      border: 1px solid var(--line);
+      overflow: hidden;
+    }
+
+    .task-progress > div {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      transition: width .2s ease;
+    }
+
     .theme-row {
       margin-top: 14px;
       display: flex;
@@ -740,6 +756,15 @@
                 <option value="4">4</option>
               </select>
             </label>
+            <select id="task-filter" class="concurrency-select" title="Filter tasks">
+              <option value="all">all</option>
+              <option value="running">running</option>
+              <option value="queued">queued</option>
+              <option value="done">done</option>
+              <option value="error">error</option>
+              <option value="canceled">canceled</option>
+            </select>
+            <button id="retry-failed-btn">Retry Failed</button>
             <button id="refresh-tasks-btn">Refresh</button>
           </div>
         </div>
@@ -805,6 +830,8 @@
     const toggleModeBtn = document.getElementById('toggle-mode-btn');
     const toggleAdvancedBtn = document.getElementById('toggle-advanced-btn');
     const refreshTasksBtn = document.getElementById('refresh-tasks-btn');
+    const retryFailedBtn = document.getElementById('retry-failed-btn');
+    const taskFilterInput = document.getElementById('task-filter');
     const queueStats = document.getElementById('queue-stats');
     const concurrencyInput = document.getElementById('concurrency-input');
     const advancedWrap = document.getElementById('advanced-wrap');
@@ -839,6 +866,7 @@
     let pollTimer = null;
     let downloadDir = '';
     let appMode = 'simple';
+    let taskFilter = 'all';
 
     function setStatus(state) {
       statusChip.className = `status-chip ${state}`;
@@ -906,6 +934,8 @@
         postActionInput.value = prefs.postAction || 'open';
         selectedExactFormat = prefs.exactFormat || '';
         exactFormatHint.textContent = selectedExactFormat ? `Exact format: ${selectedExactFormat}` : 'Using preset mode';
+        taskFilter = prefs.taskFilter || 'all';
+        taskFilterInput.value = taskFilter;
         applyMode(prefs.mode || 'simple', false);
       } catch {}
     }
@@ -914,6 +944,7 @@
       const prefs = {
         theme: document.body.getAttribute('data-theme') || 'ocean',
         mode: appMode,
+        taskFilter,
         ...gatherOptions(),
       };
       localStorage.setItem('pipedl_prefs', JSON.stringify(prefs));
@@ -1082,6 +1113,20 @@
       }
     }
 
+    async function retryFailedTasks() {
+      retryFailedBtn.disabled = true;
+      const res = await fetch('/api/retry-failed', { method: 'POST' });
+      const data = await res.json().catch(() => ({}));
+      retryFailedBtn.disabled = false;
+      if (!res.ok) {
+        showToast(data.error || 'Retry failed');
+        return;
+      }
+      showToast(data.created ? `Retried ${data.created} failed tasks` : 'No failed tasks to retry');
+      refreshTasks();
+      refreshSettings();
+    }
+
     async function refreshTasks() {
       const res = await fetch('/api/tasks');
       const items = await res.json().catch(() => []);
@@ -1091,13 +1136,23 @@
         return;
       }
 
-      items.forEach(t => {
+      const filtered = taskFilter === 'all' ? items : items.filter(t => t.status === taskFilter);
+      if (!filtered.length) {
+        tasksEl.innerHTML = `<div class="task-row"><div><div class="task-url">No ${taskFilter} tasks</div><div class="task-meta">Try a different filter</div></div><div></div></div>`;
+        return;
+      }
+
+      filtered.forEach(t => {
         const row = document.createElement('div');
         row.className = `task-row ${t.status || ''}`;
 
         const left = document.createElement('div');
         const q = t.queue_position ? ` · q#${t.queue_position}` : '';
-        left.innerHTML = `<div class="task-url" title="${t.url}">${t.url}</div><div class="task-meta">${t.format} · ${t.created_at || ''}${q}</div>`;
+        const pct = typeof t.progress?.percent === 'number' ? Math.max(0, Math.min(100, t.progress.percent)) : null;
+        const speed = t.progress?.speed ? ` · ${t.progress.speed}` : '';
+        const eta = t.progress?.eta ? ` · ETA ${t.progress.eta}` : '';
+        const pMeta = pct !== null ? ` · ${pct.toFixed(1)}%${speed}${eta}` : '';
+        left.innerHTML = `<div class="task-url" title="${t.url}">${t.url}</div><div class="task-meta">${t.format} · ${t.created_at || ''}${q}${pMeta}</div>${pct !== null ? `<div class="task-progress"><div style="width:${pct}%"></div></div>` : ''}`;
 
         const status = document.createElement('div');
         const statusIconMap = {
@@ -1251,6 +1306,12 @@
     clearUrlBtn.addEventListener('click', clearUrl);
     toggleModeBtn.addEventListener('click', () => applyMode(appMode === 'pro' ? 'simple' : 'pro'));
     refreshTasksBtn.addEventListener('click', () => { refreshTasks(); refreshSettings(); });
+    retryFailedBtn.addEventListener('click', retryFailedTasks);
+    taskFilterInput.addEventListener('change', () => {
+      taskFilter = taskFilterInput.value;
+      savePrefs();
+      refreshTasks();
+    });
     concurrencyInput.addEventListener('change', () => setConcurrency(concurrencyInput.value));
     pickFormatBtn.addEventListener('click', openFormatsModal);
     closeFormatsBtn.addEventListener('click', closeFormatsModal);
@@ -1275,6 +1336,10 @@
     applyMode(appMode, false);
     refreshSettings();
     refreshTasks();
+    setInterval(() => {
+      refreshTasks();
+      refreshSettings();
+    }, 2500);
     setConsole('Waiting for a download task...');
   </script>
 </body>
