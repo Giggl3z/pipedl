@@ -1,16 +1,12 @@
-async function getBackendConfig() {
-  const data = await chrome.storage.local.get(['pipedl_backend', 'pipedl_token']);
-  return {
-    backend: data.pipedl_backend || 'http://localhost:5000',
-    token: data.pipedl_token || '',
-  };
+async function getBackendUrl() {
+  const data = await chrome.storage.local.get(['pipedl_backend']);
+  return data.pipedl_backend || 'http://localhost:5000';
 }
 
 async function updateBadge() {
   try {
-    const { backend, token } = await getBackendConfig();
-    const headers = token ? { 'X-PipeDL-Token': token } : {};
-    const res = await fetch(`${backend}/api/tasks`, { headers });
+    const backend = await getBackendUrl();
+    const res = await fetch(`${backend}/api/tasks`);
     const tasks = await res.json().catch(() => []);
 
     if (!res.ok || !Array.isArray(tasks)) {
@@ -47,7 +43,7 @@ chrome.alarms.onAlarm.addListener((alarm) => {
 });
 
 chrome.storage.onChanged.addListener((changes, area) => {
-  if (area === 'local' && (changes.pipedl_backend || changes.pipedl_token)) updateBadge();
+  if (area === 'local' && changes.pipedl_backend) updateBadge();
 });
 
 chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {

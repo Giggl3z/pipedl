@@ -20,7 +20,6 @@ Format inspired by [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Quick copy-download-path action button.
 - Extension popup autofills URL from active YouTube tab.
 - Extension badge now shows active queued/running task count.
-- Optional API token support (`PIPEDL_TOKEN`) with extension token setting + header auth.
 
 ### Changed
 - `/api/download` now enqueues tasks (`queued` status) instead of immediate direct execution.

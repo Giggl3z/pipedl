@@ -24,10 +24,6 @@
     <div class="card">
       <label for="backend">Backend Base URL</label>
       <input id="backend" type="text" placeholder="http://localhost:5000" />
-
-      <label for="token" style="margin-top:10px;">Optional API Token</label>
-      <input id="token" type="password" placeholder="X-PipeDL-Token value" />
-
       <button id="save">Save</button>
       <div id="msg"></div>
     </div>
@@ -35,21 +31,18 @@
 
   <script>
     const backend = document.getElementById('backend');
-    const token = document.getElementById('token');
     const save = document.getElementById('save');
     const msg = document.getElementById('msg');
 
     async function load() {
-      const data = await chrome.storage.local.get(['pipedl_backend', 'pipedl_token']);
+      const data = await chrome.storage.local.get(['pipedl_backend']);
       backend.value = data.pipedl_backend || 'http://localhost:5000';
-      token.value = data.pipedl_token || '';
     }
 
     save.addEventListener('click', async () => {
       const value = backend.value.trim() || 'http://localhost:5000';
-      const t = token.value.trim();
-      await chrome.storage.local.set({ pipedl_backend: value, pipedl_token: t });
-      msg.textContent = `Saved backend + token settings`;
+      await chrome.storage.local.set({ pipedl_backend: value });
+      msg.textContent = `Saved: ${value}`;
       setTimeout(() => (msg.textContent = ''), 2000);
     });
 

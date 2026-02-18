@@ -11,8 +11,6 @@ from flask import Flask, request, jsonify, send_from_directory
 
 app = Flask(__name__, static_folder="static")
 
-API_TOKEN = os.environ.get("PIPEDL_TOKEN", "").strip()
-
 LOG_MAX_LINES = 700
 MAX_TASKS = 200
 MAX_CONCURRENCY_CAP = 4
@@ -283,19 +281,6 @@ start_workers()
 
 # ---------- API ----------
 
-@app.before_request
-def maybe_require_token():
-    if not API_TOKEN:
-        return None
-
-    if request.path.startswith("/api/"):
-        provided = (request.headers.get("X-PipeDL-Token") or "").strip()
-        if provided != API_TOKEN:
-            return jsonify({"error": "Unauthorized"}), 401
-
-    return None
-
-
 @app.route("/")
 def index():
     return send_from_directory("static", "index.html")
@@ -444,7 +429,6 @@ def api_settings():
                     "queued": len(TASK_QUEUE),
                     "downloadDir": DOWNLOAD_DIR,
                     "archiveFile": ARCHIVE_FILE,
-                    "tokenEnabled": bool(API_TOKEN),
                 }
             )
 

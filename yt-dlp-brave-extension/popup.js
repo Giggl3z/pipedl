@@ -2,7 +2,6 @@ const el = (id) => document.getElementById(id);
 
 const state = {
   backend: 'http://localhost:5000',
-  token: '',
   selectedFormat: 'best_video',
   currentTaskId: null,
   pollTimer: null,
@@ -46,9 +45,8 @@ function applyTheme(theme, save = true) {
 }
 
 async function loadSettings() {
-  const stored = await chrome.storage.local.get(['pipedl_backend', 'pipedl_theme', 'pipedl_token']);
+  const stored = await chrome.storage.local.get(['pipedl_backend', 'pipedl_theme']);
   state.backend = stored.pipedl_backend || 'http://localhost:5000';
-  state.token = stored.pipedl_token || '';
   applyTheme(stored.pipedl_theme || 'ocean', false);
 }
 
@@ -87,9 +85,7 @@ function gatherOptions() {
 
 async function api(path, options = {}) {
   const url = `${state.backend}${path}`;
-  const headers = { ...(options.headers || {}) };
-  if (state.token) headers['X-PipeDL-Token'] = state.token;
-  const res = await fetch(url, { ...options, headers });
+  const res = await fetch(url, options);
   const data = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(data.error || `${res.status} ${res.statusText}`);
   return data;

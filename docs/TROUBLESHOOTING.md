@@ -15,16 +15,6 @@ Common issues and quick fixes.
 3. Reload extension in `brave://extensions`
 4. Refresh YouTube page
 
-If backend token auth is enabled (`PIPEDL_TOKEN`), also ensure extension options has the same token.
-
----
-
-## 🔒 401 Unauthorized from API
-
-- Backend token mode is enabled.
-- Set matching token in extension options (**Optional API Token**).
-- Or disable token mode by starting backend without `PIPEDL_TOKEN`.
-
 ---
 
 ## 👀 PipeDL button not visible on YouTube
