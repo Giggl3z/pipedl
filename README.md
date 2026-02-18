@@ -140,7 +140,7 @@ Default output folder:
 
 ---
 
-## 🔌 API Endpoints
+#### 🔌 API endpoints
 
 - `POST /api/download`
 - `POST /api/formats`
@@ -153,7 +153,7 @@ Default output folder:
 
 ---
 
-## 🗂️ Repository Layout
+#### 🗂️ Repository structure
 
 ```text
 .
