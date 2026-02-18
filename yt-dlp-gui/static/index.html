@@ -326,6 +326,7 @@
       color: var(--muted);
       text-transform: uppercase;
       letter-spacing: .12em;
+      white-space: nowrap;
     }
 
     .status-chip.running { color: var(--accent); border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); }
@@ -367,6 +368,51 @@
       border-bottom: 1px solid var(--line);
       font-size: 12px;
       align-items: center;
+    }
+
+    .queue-pill {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 11px;
+      color: var(--muted);
+      background: color-mix(in srgb, var(--panel-2) 70%, transparent);
+      white-space: nowrap;
+    }
+
+    .concurrency-wrap {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 4px 9px;
+      background: color-mix(in srgb, var(--panel-2) 60%, transparent);
+    }
+
+    .concurrency-select {
+      border: 1px solid var(--line);
+      background: color-mix(in srgb, var(--panel) 80%, transparent);
+      color: var(--text);
+      border-radius: 8px;
+      padding: 2px 6px;
+      font-size: 12px;
+      outline: none;
+    }
+
+    .cancel-btn {
+      border-radius: 8px;
+      padding: 4px 8px;
+      font-size: 11px;
+      border: 1px solid color-mix(in srgb, var(--bad) 45%, var(--line));
+      background: color-mix(in srgb, var(--bad) 18%, transparent);
+      color: color-mix(in srgb, var(--bad) 70%, white);
+      cursor: pointer;
+    }
+
+    .cancel-btn:hover {
+      transform: translateY(-1px);
+      border-color: color-mix(in srgb, var(--bad) 70%, var(--line));
     }
 
     .task-row:last-child { border-bottom: 0; }
@@ -609,10 +655,10 @@
         <div class="card-header">
           <h3 class="card-title">Console + Task History</h3>
           <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-            <span class="tiny" id="queue-stats">queued: 0 · running: 0</span>
-            <label class="tiny" for="concurrency-input" style="display:flex;align-items:center;gap:6px;">
+            <span class="queue-pill" id="queue-stats">queued: 0 · running: 0</span>
+            <label class="tiny concurrency-wrap" for="concurrency-input">
               concurrency
-              <select id="concurrency-input" style="padding:4px 8px;border-radius:8px;">
+              <select id="concurrency-input" class="concurrency-select">
                 <option value="1">1</option>
                 <option value="2">2</option>
                 <option value="3">3</option>
@@ -982,9 +1028,8 @@
         const actions = document.createElement('div');
         if (t.status === 'queued' || t.status === 'running') {
           const cancelBtn = document.createElement('button');
+          cancelBtn.className = 'cancel-btn';
           cancelBtn.textContent = 'Cancel';
-          cancelBtn.style.padding = '4px 8px';
-          cancelBtn.style.fontSize = '11px';
           cancelBtn.addEventListener('click', async (e) => {
             e.stopPropagation();
             await fetch(`/api/cancel/${t.task_id}`, { method: 'POST' });
