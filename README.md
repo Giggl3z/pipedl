@@ -171,6 +171,8 @@ Default output folder:
 ├─ docs/
 │  ├─ SETUP.md
 │  ├─ TROUBLESHOOTING.md
+│  ├─ ARCHITECTURE.md
+│  ├─ FAQ.md
 │  ├─ PUBLIC_RELEASE_CHECKLIST.md
 │  └─ RELEASE_TEMPLATE.md
 ├─ CHANGELOG.md
@@ -183,6 +185,8 @@ Default output folder:
 
 - Setup → [`docs/SETUP.md`](docs/SETUP.md)
 - Troubleshooting → [`docs/TROUBLESHOOTING.md`](docs/TROUBLESHOOTING.md)
+- Architecture → [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)
+- FAQ → [`docs/FAQ.md`](docs/FAQ.md)
 - Changelog → [`CHANGELOG.md`](CHANGELOG.md)
 - Release template → [`docs/RELEASE_TEMPLATE.md`](docs/RELEASE_TEMPLATE.md)
 - Public release checklist → [`docs/PUBLIC_RELEASE_CHECKLIST.md`](docs/PUBLIC_RELEASE_CHECKLIST.md)

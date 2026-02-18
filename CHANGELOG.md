@@ -35,6 +35,7 @@ Format inspired by [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Tray app now detects external server instances and reflects status correctly (won’t spawn duplicate server or attempt to stop unmanaged process).
 - Tray/server app naming simplified to `pipedl-server` across window title, startup task, and user-facing hints.
 - Setup and troubleshooting docs expanded with `pipedl-server` flow, extension server-status behavior, startup task guidance, and updated API references.
+- Added new docs: `docs/ARCHITECTURE.md` and `docs/FAQ.md`.
 - Extension popup autofills URL from active YouTube tab.
 - Extension popup now shows live backend server status (online/offline), disables backend actions when offline, and surfaces a clear server-offline hint.
 - Extension badge now shows active queued/running task count.

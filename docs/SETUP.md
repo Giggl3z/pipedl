@@ -147,7 +147,17 @@ Ctrl + C
 
 ---
 
-## 7) API quick reference
+## 7) Verification checklist
+
+After setup, verify these quickly:
+- `http://localhost:5000` loads
+- extension popup shows `server: online`
+- starting a test URL creates `queued -> running -> done`
+- output appears in `Downloads\\PipeDL`
+
+---
+
+## 8) API quick reference
 
 - `POST /api/download`
 - `POST /api/formats`
