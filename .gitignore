@@ -1,5 +1,25 @@
+# AeroDL generated downloads / media
 yt-dlp-gui/downloads/
 *.mp4
 *.wav
 *.mkv
 *.webm
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Logs
+*.log
+
+# OpenClaw local state
+.openclaw/
+memory/
+
+# OS/Editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
