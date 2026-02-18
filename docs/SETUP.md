@@ -126,21 +126,6 @@ python -m pip install --upgrade -r requirements.txt
 
 ---
 
-## 🟢 Absolute Beginner Path (minimal steps)
-
-If you feel overwhelmed, just do this:
-
-```powershell
-git clone https://github.com/Giggl3z/pipedl.git
-cd pipedl\yt-dlp-gui
-python -m pip install -r requirements.txt
-python app.py
-```
-
-Then open `http://localhost:5000`.
-
----
-
 ## 🧯 If something fails
 
 Use: [`docs/TROUBLESHOOTING.md`](TROUBLESHOOTING.md)

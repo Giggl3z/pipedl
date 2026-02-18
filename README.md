@@ -77,44 +77,6 @@ git --version
 
 ---
 
-## 🟢 Absolute Beginner Quick Install (copy/paste)
-
-> If you just want it working fast, run these in PowerShell one by one.
-
-### 1) Clone the repo
-
-```powershell
-git clone https://github.com/Giggl3z/pipedl.git
-cd pipedl
-```
-
-### 2) Install dependencies
-
-```powershell
-cd yt-dlp-gui
-python -m pip install --upgrade pip
-python -m pip install -r requirements.txt
-```
-
-### 3) Start backend
-
-```powershell
-python app.py
-```
-
-### 4) Open app
-
-- Go to: `http://localhost:5000`
-
-### 5) Add extension (optional but recommended)
-
-- Open `brave://extensions`
-- Enable **Developer mode**
-- Click **Load unpacked**
-- Pick folder: `yt-dlp-brave-extension`
-
----
-
 ## ⚡ Quick Start (Recommended)
 
 ### 1) Setup once

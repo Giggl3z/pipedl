@@ -22,7 +22,6 @@ Format inspired by [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Task list visual polish: status icons, hover motion, and running pulse accent.
 - Status chip tooltips now show queue position + started/finished timestamps.
 - New PipeDL SVG logo asset and refreshed README/docs visual layout.
-- Added absolute-beginner quick install sections to README and setup docs.
 - Extension popup autofills URL from active YouTube tab.
 - Extension badge now shows active queued/running task count.
 
