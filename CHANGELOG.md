@@ -31,6 +31,7 @@ Format inspired by [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
   - `run-tray.ps1`
   - `install-tray-autostart.ps1`
   - `uninstall-tray-autostart.ps1`
+- `setup.ps1` now asks whether to enable tray auto-start at login during setup.
 - Extension popup autofills URL from active YouTube tab.
 - Extension badge now shows active queued/running task count.
 
