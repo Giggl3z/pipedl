@@ -361,11 +361,12 @@
 
     .task-row {
       display: grid;
-      grid-template-columns: 1fr auto;
+      grid-template-columns: 1fr auto auto;
       gap: 8px;
       padding: 8px 10px;
       border-bottom: 1px solid var(--line);
       font-size: 12px;
+      align-items: center;
     }
 
     .task-row:last-child { border-bottom: 0; }
@@ -607,7 +608,19 @@
       <article class="card">
         <div class="card-header">
           <h3 class="card-title">Console + Task History</h3>
-          <button id="refresh-tasks-btn">Refresh</button>
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+            <span class="tiny" id="queue-stats">queued: 0 · running: 0</span>
+            <label class="tiny" for="concurrency-input" style="display:flex;align-items:center;gap:6px;">
+              concurrency
+              <select id="concurrency-input" style="padding:4px 8px;border-radius:8px;">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+              </select>
+            </label>
+            <button id="refresh-tasks-btn">Refresh</button>
+          </div>
         </div>
         <div class="card-body">
           <div class="console" id="console" aria-live="polite">Waiting for a download task...</div>
@@ -669,6 +682,8 @@
     const toggleModeBtn = document.getElementById('toggle-mode-btn');
     const toggleAdvancedBtn = document.getElementById('toggle-advanced-btn');
     const refreshTasksBtn = document.getElementById('refresh-tasks-btn');
+    const queueStats = document.getElementById('queue-stats');
+    const concurrencyInput = document.getElementById('concurrency-input');
     const advancedWrap = document.getElementById('advanced-wrap');
     const consoleEl = document.getElementById('console');
     const tasksEl = document.getElementById('tasks');
@@ -895,8 +910,31 @@
         const data = await res.json().catch(() => ({}));
         if (res.ok) {
           downloadDir = data.downloadDir || '';
+          if (data.concurrency) {
+            concurrencyInput.value = String(data.concurrency);
+          }
+          const queued = Number(data.queued || 0);
+          const running = Number(data.running || 0);
+          queueStats.textContent = `queued: ${queued} · running: ${running}`;
         }
       } catch {}
+    }
+
+    async function setConcurrency(value) {
+      const n = Number(value);
+      if (!Number.isFinite(n)) return;
+      const res = await fetch('/api/settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ concurrency: n }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        showToast(data.error || 'Failed to set concurrency');
+      } else {
+        showToast(`Concurrency set to ${data.concurrency}`);
+      }
+      refreshSettings();
     }
 
     async function copyDownloadPath() {
@@ -935,18 +973,41 @@
         row.className = 'task-row';
 
         const left = document.createElement('div');
-        left.innerHTML = `<div class="task-url" title="${t.url}">${t.url}</div><div class="task-meta">${t.format} · ${t.created_at || ''}</div>`;
+        const q = t.queue_position ? ` · q#${t.queue_position}` : '';
+        left.innerHTML = `<div class="task-url" title="${t.url}">${t.url}</div><div class="task-meta">${t.format} · ${t.created_at || ''}${q}</div>`;
 
-        const right = document.createElement('div');
-        right.innerHTML = `<span class="status-chip ${t.status}">${t.status}</span>`;
+        const status = document.createElement('div');
+        status.innerHTML = `<span class="status-chip ${t.status}">${t.status}</span>`;
 
-        row.append(left, right);
+        const actions = document.createElement('div');
+        if (t.status === 'queued' || t.status === 'running') {
+          const cancelBtn = document.createElement('button');
+          cancelBtn.textContent = 'Cancel';
+          cancelBtn.style.padding = '4px 8px';
+          cancelBtn.style.fontSize = '11px';
+          cancelBtn.addEventListener('click', async (e) => {
+            e.stopPropagation();
+            await fetch(`/api/cancel/${t.task_id}`, { method: 'POST' });
+            showToast(`Canceled ${t.task_id.slice(0, 8)}`);
+            if (currentTaskId === t.task_id) {
+              currentTaskId = null;
+              setStatus('idle');
+            }
+            refreshTasks();
+            refreshSettings();
+          });
+          actions.appendChild(cancelBtn);
+        }
+
+        row.append(left, status, actions);
         row.addEventListener('click', () => {
           currentTaskId = t.task_id;
           pollStatus();
         });
         tasksEl.appendChild(row);
       });
+
+      refreshSettings();
     }
 
     async function pollStatus() {
@@ -1028,13 +1089,15 @@
       pollTimer = setInterval(pollStatus, 1000);
       await pollStatus();
       await refreshTasks();
+      await refreshSettings();
     }
 
     downloadBtn.addEventListener('click', startDownload);
     openFolderBtn.addEventListener('click', openDownloadsFolder);
     copyPathBtn.addEventListener('click', copyDownloadPath);
     toggleModeBtn.addEventListener('click', () => applyMode(appMode === 'pro' ? 'simple' : 'pro'));
-    refreshTasksBtn.addEventListener('click', refreshTasks);
+    refreshTasksBtn.addEventListener('click', () => { refreshTasks(); refreshSettings(); });
+    concurrencyInput.addEventListener('change', () => setConcurrency(concurrencyInput.value));
     pickFormatBtn.addEventListener('click', openFormatsModal);
     closeFormatsBtn.addEventListener('click', closeFormatsModal);
     formatsModalBackdrop.addEventListener('click', (e) => {
