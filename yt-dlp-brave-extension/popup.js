@@ -50,6 +50,30 @@ async function loadSettings() {
   applyTheme(stored.pipedl_theme || 'ocean', false);
 }
 
+async function autofillFromActiveTab() {
+  try {
+    const [tab] = await chrome.tabs.query({ active: true, lastFocusedWindow: true });
+    const tabUrl = tab?.url || '';
+    if (!tabUrl) return;
+
+    const isYouTube = tabUrl.includes('youtube.com/watch') || tabUrl.includes('youtube.com/shorts/');
+    if (!isYouTube) return;
+
+    if (!ui.url.value.trim()) {
+      ui.url.value = tabUrl;
+      setHint('Autofilled from current YouTube tab.');
+    }
+  } catch {
+    // ignore autofill failures
+  }
+}
+
+function refreshBadgeSoon() {
+  chrome.runtime.sendMessage({ type: 'PIPEDL_BADGE_REFRESH' }, () => {
+    // best effort
+  });
+}
+
 function gatherOptions() {
   return {
     writeSubs: ui.writeSubs.checked,
@@ -103,18 +127,25 @@ async function pollStatus() {
     setStatus(data.status || 'idle');
     if (Array.isArray(data.log)) setConsole(data.log.join('\n'));
 
+    if (data.status === 'queued') {
+      const qp = data.queue_position ? ` (#${data.queue_position})` : '';
+      setHint(`Task ${state.currentTaskId.slice(0, 8)} queued${qp}...`);
+      return;
+    }
+
     if (data.status === 'running') {
       setHint(`Task ${state.currentTaskId.slice(0, 8)} running...`);
       return;
     }
 
-    if (data.status === 'done' || data.status === 'error') {
+    if (data.status === 'done' || data.status === 'error' || data.status === 'canceled') {
       ui.downloadBtn.disabled = false;
       ui.downloadBtn.textContent = 'Start Download';
       setHint(`Task ${state.currentTaskId.slice(0, 8)} ${data.status}.`);
       clearInterval(state.pollTimer);
       state.pollTimer = null;
       refreshTasks();
+      refreshBadgeSoon();
     }
   } catch (err) {
     setHint(`Status error: ${err.message}`);
@@ -151,6 +182,7 @@ async function startDownload() {
     state.currentTaskId = data.task_id;
     setHint(`Task ${state.currentTaskId.slice(0, 8)} queued.`);
     ui.downloadBtn.textContent = 'Downloading...';
+    refreshBadgeSoon();
 
     if (state.pollTimer) clearInterval(state.pollTimer);
     state.pollTimer = setInterval(pollStatus, 1000);
@@ -180,5 +212,7 @@ ui.openFolderBtn.addEventListener('click', openDownloads);
 
 (async function init() {
   await loadSettings();
+  await autofillFromActiveTab();
   await refreshTasks();
+  refreshBadgeSoon();
 })();

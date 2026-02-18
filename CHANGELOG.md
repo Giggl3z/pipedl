@@ -18,6 +18,8 @@ Format inspired by [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Post-download action selector (open folder / copy path / both / none).
 - Simple vs Pro UI mode toggle.
 - Quick copy-download-path action button.
+- Extension popup autofills URL from active YouTube tab.
+- Extension badge now shows active queued/running task count.
 
 ### Changed
 - `/api/download` now enqueues tasks (`queued` status) instead of immediate direct execution.

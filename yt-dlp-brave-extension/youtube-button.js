@@ -395,6 +395,7 @@
       startBtn.disabled = true;
       try {
         const taskId = await startDownload(selectedFormat);
+        chrome.runtime.sendMessage({ type: 'PIPEDL_BADGE_REFRESH' }, () => {});
         showToast(`PipeDL queued (${taskId.slice(0, 8)})`);
         closeMenu();
       } catch (err) {
