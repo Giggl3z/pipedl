@@ -43,6 +43,10 @@ button{border:1px solid var(--line);background:#131f3a;color:var(--text);border-
 .console{margin:8px 0 0;background:#030815;border:1px solid var(--line);border-radius:8px;padding:8px;max-height:170px;overflow:auto;font-size:11px;line-height:1.4;white-space:pre-wrap}
 body[data-theme="matrix"] .console{background:#010403;color:#ccffd8}
 .status{font-size:11px;color:var(--muted);text-transform:uppercase}
+.server-chip{font-size:10px;text-transform:uppercase;letter-spacing:.08em;padding:4px 7px;border-radius:999px;border:1px solid var(--line);color:var(--muted);background:transparent;white-space:nowrap}
+.server-chip.online{color:#4ade80;border-color:color-mix(in srgb,#4ade80 45%, var(--line));}
+.server-chip.offline{color:#fb7185;border-color:color-mix(in srgb,#fb7185 45%, var(--line));}
+.server-chip.checking{color:var(--muted)}
 .themes{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
 .swatch{font-size:10px;text-transform:uppercase;letter-spacing:.08em;background:linear-gradient(135deg,#6ed4ff,#7a7cff)}
 .swatch[data-theme="sunset"]{background:linear-gradient(135deg,#fb7185,#f59e0b)}

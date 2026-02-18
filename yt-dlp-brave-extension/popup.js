@@ -23,6 +23,7 @@ const ui = {
   status: el('status'),
   hint: el('hint'),
   swatches: Array.from(document.querySelectorAll('.swatch')),
+  serverChip: el('serverChip'),
 };
 
 function setStatus(text) {
@@ -36,6 +37,18 @@ function setHint(text) {
 function setConsole(text) {
   ui.console.textContent = text;
   ui.console.scrollTop = ui.console.scrollHeight;
+}
+
+function setServerChip(state, text) {
+  ui.serverChip.classList.remove('online', 'offline', 'checking');
+  ui.serverChip.classList.add(state);
+  ui.serverChip.textContent = text;
+}
+
+function setBackendControlsEnabled(enabled) {
+  ui.downloadBtn.disabled = !enabled;
+  ui.refreshBtn.disabled = !enabled;
+  ui.openFolderBtn.disabled = !enabled;
 }
 
 function applyTheme(theme, save = true) {
@@ -91,7 +104,27 @@ async function api(path, options = {}) {
   return data;
 }
 
+async function checkServerStatus() {
+  try {
+    await api('/api/settings');
+    setServerChip('online', 'server: online');
+    setBackendControlsEnabled(true);
+    return true;
+  } catch {
+    setServerChip('offline', 'server: offline');
+    setBackendControlsEnabled(false);
+    setHint('PipeDL server is offline. Start the tray app/server first.');
+    return false;
+  }
+}
+
 async function refreshTasks() {
+  const online = await checkServerStatus();
+  if (!online) {
+    ui.tasks.innerHTML = '<div class="task">Server offline</div>';
+    return;
+  }
+
   try {
     const items = await api('/api/tasks');
     ui.tasks.innerHTML = '';
@@ -157,6 +190,9 @@ async function pollStatus() {
 }
 
 async function startDownload() {
+  const online = await checkServerStatus();
+  if (!online) return;
+
   const url = ui.url.value.trim();
   if (!url) {
     setHint('Paste a URL first.');
@@ -197,6 +233,9 @@ async function startDownload() {
 }
 
 async function openDownloads() {
+  const online = await checkServerStatus();
+  if (!online) return;
+
   try {
     await api('/api/open-downloads', { method: 'POST' });
   } catch (err) {
@@ -212,7 +251,13 @@ ui.openFolderBtn.addEventListener('click', openDownloads);
 
 (async function init() {
   await loadSettings();
+  setServerChip('checking', 'server: checking');
+  await checkServerStatus();
   await autofillFromActiveTab();
   await refreshTasks();
   refreshBadgeSoon();
+
+  setInterval(() => {
+    checkServerStatus();
+  }, 4000);
 })();
