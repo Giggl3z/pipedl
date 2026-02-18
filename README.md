@@ -1,23 +1,34 @@
-# 🚀 PipeDL
+# 🧪 PipeDL
 
-![Python](https://img.shields.io/badge/Python-3.10%2B-blue)
-![Brave Extension](https://img.shields.io/badge/Brave-MV3-orange)
-![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)
+![PipeDL](https://img.shields.io/badge/Name-PipeDL-6D28D9)
+![Python](https://img.shields.io/badge/Python-3.10%2B-2563EB)
+![Brave Extension](https://img.shields.io/badge/Brave-MV3-F97316)
+![License: MIT](https://img.shields.io/badge/License-MIT-16A34A)
 
-> A modern `yt-dlp` toolkit with a full web UI + Brave extension controls.
+> A smooth, modern `yt-dlp` experience — website UI + Brave extension + YouTube action button.
 
-PipeDL makes `yt-dlp` easier to use with a clean interface, quick presets, and YouTube-integrated actions.
+PipeDL brings CLI power into a cleaner workflow: choose preset, tweak options, launch, and monitor output in real time.
 
 ---
 
-## ✨ Highlights
+## 🌊 PipeDL Flow
 
-- 🎬 Format presets: Best / MP4 / WebM / MP3 / Opus / WAV
-- ⚙️ Advanced `yt-dlp` options (subs, metadata, thumbnail, retries, rate limit)
+1. Paste / open a YouTube video
+2. Pick format preset (Best, MP4, WebM, MP3, Opus, WAV)
+3. Start download
+4. Watch live logs + task history
+5. Grab files from `Downloads\PipeDL`
+
+---
+
+## ✨ Features
+
+- 🎬 Download presets: Best / MP4 / WebM / MP3 / Opus / WAV
+- ⚙️ Advanced options: subtitles, metadata, thumbnail, retries, rate limit
 - 📜 Live console output
-- 🧾 Task history
-- ▶️ YouTube action-row **PipeDL** button with quick menu
-- 🧩 Brave popup controller + options page
+- 🧾 Task history tracking
+- ▶️ YouTube action-row **PipeDL** button + quick menu
+- 🧩 Brave popup controller + settings page
 
 ---
 
@@ -45,39 +56,40 @@ PipeDL makes `yt-dlp` easier to use with a clean interface, quick presets, and Y
 
 ## ⚡ Quick Start
 
-### 1) One-time setup (recommended) — one-liner
+### 1) One-time setup (one-liner)
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\setup.ps1
 ```
 
-### 2) Start PipeDL backend — one-liner
+### 2) Start PipeDL (one-liner)
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\run.ps1
 ```
 
-Manual alternative (one-liner):
+Manual one-liner:
 
 ```powershell
 cd yt-dlp-gui; python -m pip install flask yt-dlp; python app.py
 ```
 
-- 🌐 GUI URL: `http://localhost:5000`
-- 📂 Download path: `C:\Users\<you>\Downloads\PipeDL`
+- 🌐 GUI: `http://localhost:5000`
+- 📂 Output folder: `C:\Users\<you>\Downloads\PipeDL`
 
-### 3) Load Brave extension
+---
+
+## 🧩 Load Brave Extension
 
 1. Open `brave://extensions`
 2. Enable **Developer mode**
 3. Click **Load unpacked**
-4. Select folder: `yt-dlp-brave-extension/`
+4. Select `yt-dlp-brave-extension/`
 
-### 4) Download from YouTube
-
-1. Open a YouTube video page
-2. Click **PipeDL** near Like/Share buttons
-3. Pick a format and press **Download**
+Then on YouTube:
+1. Open a video page
+2. Click **PipeDL** near Like/Share
+3. Pick format + download
 
 ---
 
@@ -94,29 +106,21 @@ cd yt-dlp-gui; python -m pip install flask yt-dlp; python app.py
 
 ---
 
-## 🧠 Pro Tips
-
-- Keep backend running while using extension.
-- If YouTube button disappears after update, reload extension + refresh tab.
-- Avoid committing media files (`.mp4`, `.wav`, etc.) to GitHub.
-
----
-
 ## ⚠️ Limitations
 
-- The Brave extension cannot execute `yt-dlp` directly due to browser sandboxing.
-- A local backend (`yt-dlp-gui`) must be running for extension actions.
+- Browser extensions cannot run `yt-dlp` directly (sandbox restriction).
+- Local backend (`yt-dlp-gui`) must be running for extension actions.
 
 ## 🤝 Contributing
 
-- Open bugs with the built-in issue templates.
-- Keep PRs focused and include reproduction/test notes.
-- Avoid committing generated media or local machine artifacts.
+- Use issue templates for bugs/features.
+- Keep PRs focused and testable.
+- Do not commit generated media or local machine artifacts.
 
 ## ⚖️ License
 
-This project is licensed under the MIT License. See [`LICENSE`](LICENSE).
+MIT — see [`LICENSE`](LICENSE).
 
-## ⚠️ Legal / Responsible Use
+## ⚠️ Responsible Use
 
-Use PipeDL responsibly and in compliance with platform Terms of Service and your local laws.
+Use PipeDL in compliance with platform Terms of Service and local laws.
