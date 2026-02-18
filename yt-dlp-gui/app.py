@@ -63,19 +63,19 @@ def queue_position(task_id: str) -> int | None:
         return None
 
 
-def trim_tasks_if_needed() -> None:
-    with TASKS_LOCK:
-        if len(TASKS) <= MAX_TASKS:
-            return
+def trim_tasks_if_needed_locked() -> None:
+    # Caller must hold TASKS_LOCK/QUEUE_COND lock.
+    if len(TASKS) <= MAX_TASKS:
+        return
 
-        ordered = sorted(TASKS.items(), key=lambda kv: kv[1].get("created_at", ""))
-        for task_id, task in ordered:
-            if len(TASKS) <= MAX_TASKS:
-                break
-            if task.get("status") in ("done", "error", "canceled"):
-                TASKS.pop(task_id, None)
-                if task_id in TASK_QUEUE:
-                    TASK_QUEUE.remove(task_id)
+    ordered = sorted(TASKS.items(), key=lambda kv: kv[1].get("created_at", ""))
+    for task_id, task in ordered:
+        if len(TASKS) <= MAX_TASKS:
+            break
+        if task.get("status") in ("done", "error", "canceled"):
+            TASKS.pop(task_id, None)
+            if task_id in TASK_QUEUE:
+                TASK_QUEUE.remove(task_id)
 
 
 def append_log(task: dict, line: str) -> None:
@@ -327,7 +327,7 @@ def api_download():
     with QUEUE_COND:
         TASKS[task_id] = task
         TASK_QUEUE.append(task_id)
-        trim_tasks_if_needed()
+        trim_tasks_if_needed_locked()
         QUEUE_COND.notify_all()
 
     return jsonify({"task_id": task_id, "status": "queued", "queue_position": queue_position(task_id)})
