@@ -18,4 +18,5 @@ Write-Host ''
 Write-Host '✅ Setup complete!' -ForegroundColor Green
 Write-Host 'Next steps:' -ForegroundColor Green
 Write-Host '1) Run backend:  powershell -ExecutionPolicy Bypass -File .\run.ps1'
-Write-Host '2) Load extension: brave://extensions -> Developer mode -> Load unpacked -> yt-dlp-brave-extension'
+Write-Host '2) Or run tray app: powershell -ExecutionPolicy Bypass -File .\run-tray.ps1'
+Write-Host '3) Load extension: brave://extensions -> Developer mode -> Load unpacked -> yt-dlp-brave-extension'

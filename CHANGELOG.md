@@ -26,6 +26,11 @@ Format inspired by [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Keyboard shortcuts in web UI: `Ctrl/Cmd + Enter` to start and `Esc` to close the exact-format modal.
 - Task list filters (all/running/queued/done/error/canceled) and one-click “Retry Failed” action.
 - Task rows now show parsed progress details (percent/speed/ETA) when available.
+- New PipeDL tray controller app (`yt-dlp-gui/tray_app.py`) with status display, start/stop server control, web UI launch, and log viewer.
+- Startup scripts for tray mode:
+  - `run-tray.ps1`
+  - `install-tray-autostart.ps1`
+  - `uninstall-tray-autostart.ps1`
 - Extension popup autofills URL from active YouTube tab.
 - Extension badge now shows active queued/running task count.
 
@@ -39,6 +44,7 @@ Format inspired by [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Top toolbar is now sticky with glass styling for easier access while scrolling.
 - Root README copy/style refreshed to better match the PipeDL brand tone while keeping structure intact.
 - README top section polished (hero line, compact badge row, stronger launch CTA copy).
+- `app.py` now supports `--no-debug` / `PIPEDL_DEBUG=0` for stable background and tray execution.
 
 ### Fixed
 - Fixed queue deadlock in `/api/download` caused by nested locking during task trimming.

@@ -618,4 +618,8 @@ def api_open_downloads():
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    debug_enabled = True
+    if "--no-debug" in sys.argv or os.environ.get("PIPEDL_DEBUG", "1") in ("0", "false", "False"):
+        debug_enabled = False
+
+    app.run(host="0.0.0.0", port=5000, debug=debug_enabled)
