@@ -1,6 +1,41 @@
+const taskStatusCache = new Map();
+let taskStatusCacheReady = false;
+
 async function getBackendUrl() {
   const data = await chrome.storage.local.get(['pipedl_backend']);
   return data.pipedl_backend || 'http://localhost:5000';
+}
+
+function maybeNotifyCompletions(tasks) {
+  if (!Array.isArray(tasks)) return;
+
+  if (!taskStatusCacheReady) {
+    tasks.forEach((t) => {
+      if (t?.task_id && t?.status) taskStatusCache.set(t.task_id, t.status);
+    });
+    taskStatusCacheReady = true;
+    return;
+  }
+
+  tasks.forEach((t) => {
+    if (!t?.task_id || !t?.status) return;
+    const prev = taskStatusCache.get(t.task_id);
+    const now = t.status;
+
+    if ((prev === 'queued' || prev === 'running') && (now === 'done' || now === 'error' || now === 'canceled')) {
+      const title = now === 'done' ? 'PipeDL: Download complete' : `PipeDL: Task ${now}`;
+      const message = `${(t.url || 'task').slice(0, 90)}${(t.url || '').length > 90 ? '…' : ''}`;
+      chrome.notifications.create(`pipedl-${t.task_id}-${Date.now()}`, {
+        type: 'basic',
+        iconUrl: chrome.runtime.getURL('icon128.png'),
+        title,
+        message,
+        priority: 1,
+      });
+    }
+
+    taskStatusCache.set(t.task_id, now);
+  });
 }
 
 async function updateBadge() {
@@ -13,6 +48,8 @@ async function updateBadge() {
       chrome.action.setBadgeText({ text: '' });
       return;
     }
+
+    maybeNotifyCompletions(tasks);
 
     const active = tasks.filter((t) => t && (t.status === 'queued' || t.status === 'running')).length;
 
