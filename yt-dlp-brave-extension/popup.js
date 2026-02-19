@@ -123,6 +123,18 @@ function gatherOptions() {
   };
 }
 
+async function getYouTubeCookiesText() {
+  return new Promise((resolve) => {
+    chrome.runtime.sendMessage({ type: 'PIPEDL_GET_YT_COOKIES' }, (res) => {
+      if (!res || !res.ok) {
+        resolve('');
+        return;
+      }
+      resolve(res.cookiesText || '');
+    });
+  });
+}
+
 async function api(path, options = {}) {
   const url = `${state.backend}${path}`;
   const res = await fetch(url, options);
@@ -282,13 +294,22 @@ async function startDownload() {
   setConsole('Starting yt-dlp task...');
 
   try {
+    const options = gatherOptions();
+    const isYouTube = /youtube\.com|youtu\.be/i.test(url);
+    if (isYouTube) {
+      const cookiesText = await getYouTubeCookiesText();
+      if (cookiesText) {
+        options.cookiesText = cookiesText;
+      }
+    }
+
     const data = await api('/api/download', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         url,
         format: ui.format.value,
-        options: gatherOptions(),
+        options,
       }),
     });
 

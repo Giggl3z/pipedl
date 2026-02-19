@@ -1,6 +1,7 @@
 import os
 import re
 import sys
+import tempfile
 import subprocess
 import threading
 import uuid
@@ -142,7 +143,7 @@ def parse_progress_from_log(lines: list[str]) -> dict:
     }
 
 
-def build_command(url: str, fmt: str, options: dict, cookies_override: str | None = None) -> list[str]:
+def build_command(url: str, fmt: str, options: dict, cookies_override: str | None = None, cookies_file_override: str | None = None) -> list[str]:
     base_cmd = [sys.executable, "-m", "yt_dlp"]
 
     exact_format = (options.get("exactFormat") or "").strip()
@@ -176,13 +177,16 @@ def build_command(url: str, fmt: str, options: dict, cookies_override: str | Non
     if bool(options.get("embedThumbnail")):
         cmd += ["--embed-thumbnail"]
 
-    cookies_from_browser = (cookies_override or options.get("cookiesFromBrowser") or "").strip().lower()
-    if cookies_from_browser in ("brave", "chrome", "edge", "firefox") or ":" in cookies_from_browser:
-        cmd += ["--cookies-from-browser", cookies_from_browser]
+    if cookies_file_override:
+        cmd += ["--cookies", cookies_file_override]
     else:
-        cookies_path = (options.get("cookiesPath") or "").strip()
-        if cookies_path:
-            cmd += ["--cookies", cookies_path]
+        cookies_from_browser = (cookies_override or options.get("cookiesFromBrowser") or "").strip().lower()
+        if cookies_from_browser in ("brave", "chrome", "edge", "firefox") or ":" in cookies_from_browser:
+            cmd += ["--cookies-from-browser", cookies_from_browser]
+        else:
+            cookies_path = (options.get("cookiesPath") or "").strip()
+            if cookies_path:
+                cmd += ["--cookies", cookies_path]
 
     rate_limit = to_rate_limit(options.get("rateLimit") or "")
     if rate_limit:
@@ -213,6 +217,22 @@ def cookie_browser_variants(raw: str) -> list[str]:
     return variants
 
 
+def write_task_cookie_file(task_id: str, cookies_text: str) -> str | None:
+    text = (cookies_text or "").strip()
+    if not text:
+        return None
+
+    if not text.startswith("# Netscape HTTP Cookie File"):
+        text = "# Netscape HTTP Cookie File\n" + text
+
+    cookie_dir = os.path.join(APP_DATA_DIR, "cookies")
+    os.makedirs(cookie_dir, exist_ok=True)
+    path = os.path.join(cookie_dir, f"cookies-{task_id}.txt")
+    with open(path, "w", encoding="utf-8", newline="\n") as f:
+        f.write(text)
+    return path
+
+
 def run_yt_dlp(task_id: str):
     with TASKS_LOCK:
         task = TASKS.get(task_id)
@@ -222,8 +242,12 @@ def run_yt_dlp(task_id: str):
         fmt = task["format"]
         options = task["options"]
 
-    cookie_variants = cookie_browser_variants(options.get("cookiesFromBrowser") or "")
-    if cookie_variants:
+    cookie_file_override = write_task_cookie_file(task_id, options.get("cookiesText") or "")
+
+    cookie_variants = cookie_browser_variants(options.get("cookiesFromBrowser") or "") if not cookie_file_override else []
+    if cookie_file_override:
+        cmd_variants = [build_command(url, fmt, options, cookies_file_override=cookie_file_override)]
+    elif cookie_variants:
         cmd_variants = [build_command(url, fmt, options, c) for c in cookie_variants]
     else:
         cmd_variants = [build_command(url, fmt, options)]
@@ -327,6 +351,12 @@ def run_yt_dlp(task_id: str):
             task["finished_at"] = now_iso()
             append_log(task, "")
             append_log(task, f"Error running yt-dlp: {e}")
+    finally:
+        if cookie_file_override and os.path.exists(cookie_file_override):
+            try:
+                os.remove(cookie_file_override)
+            except Exception:
+                pass
 
 
 # ---------- Queue workers ----------
@@ -411,6 +441,7 @@ def api_download():
             "exactFormat": (options.get("exactFormat") or "").strip(),
             "outputTemplate": (options.get("outputTemplate") or "").strip(),
             "cookiesFromBrowser": (options.get("cookiesFromBrowser") or "").strip().lower(),
+            "cookiesText": (options.get("cookiesText") or "").strip(),
             "cookiesPath": (options.get("cookiesPath") or "").strip(),
             "rateLimit": (options.get("rateLimit") or "").strip(),
             "retries": str(options.get("retries") or "").strip(),

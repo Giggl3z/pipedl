@@ -51,6 +51,18 @@
     });
   }
 
+  function getYouTubeCookiesText() {
+    return new Promise((resolve) => {
+      chrome.runtime.sendMessage({ type: 'PIPEDL_GET_YT_COOKIES' }, (res) => {
+        if (!res || !res.ok) {
+          resolve('');
+          return;
+        }
+        resolve(res.cookiesText || '');
+      });
+    });
+  }
+
   function showToast(text, isError = false) {
     const id = 'aerodl-toast';
     let toast = document.getElementById(id);
@@ -91,6 +103,11 @@
         autoOpenFolder: true,
       },
     };
+
+    const cookiesText = await getYouTubeCookiesText();
+    if (cookiesText) {
+      payload.options.cookiesText = cookiesText;
+    }
 
     if (selected?.exact) {
       payload.options.exactFormat = selected.exact;

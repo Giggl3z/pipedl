@@ -3,10 +3,14 @@
   "name": "PipeDL for yt-dlp",
   "description": "Brave extension UI for controlling a local yt-dlp backend.",
   "version": "1.0.0",
-  "permissions": ["storage", "alarms", "tabs", "activeTab", "notifications"],
+  "permissions": ["storage", "alarms", "tabs", "activeTab", "notifications", "cookies"],
   "host_permissions": [
     "http://localhost:5000/*",
-    "http://127.0.0.1:5000/*"
+    "http://127.0.0.1:5000/*",
+    "https://*.youtube.com/*",
+    "https://youtube.com/*",
+    "https://*.google.com/*",
+    "https://google.com/*"
   ],
   "content_scripts": [
     {

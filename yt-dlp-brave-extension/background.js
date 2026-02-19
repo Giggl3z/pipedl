@@ -6,6 +6,44 @@ async function getBackendUrl() {
   return data.pipedl_backend || 'http://localhost:5000';
 }
 
+function toNetscapeCookieLine(c) {
+  const domain = c.domain || '';
+  const includeSub = domain.startsWith('.') ? 'TRUE' : 'FALSE';
+  const path = c.path || '/';
+  const secure = c.secure ? 'TRUE' : 'FALSE';
+  const expires = typeof c.expirationDate === 'number' ? Math.floor(c.expirationDate) : 0;
+  const name = c.name || '';
+  const value = c.value || '';
+  return `${domain}\t${includeSub}\t${path}\t${secure}\t${expires}\t${name}\t${value}`;
+}
+
+async function exportYouTubeCookiesNetscape() {
+  const patterns = [
+    { domain: '.youtube.com' },
+    { domain: 'youtube.com' },
+    { domain: '.google.com' },
+    { domain: 'google.com' },
+  ];
+
+  const all = [];
+  for (const p of patterns) {
+    try {
+      const arr = await chrome.cookies.getAll(p);
+      if (Array.isArray(arr)) all.push(...arr);
+    } catch {}
+  }
+
+  const dedup = new Map();
+  all.forEach((c) => {
+    const key = `${c.domain}|${c.path}|${c.name}`;
+    dedup.set(key, c);
+  });
+
+  const lines = ['# Netscape HTTP Cookie File'];
+  for (const c of dedup.values()) lines.push(toNetscapeCookieLine(c));
+  return lines.join('\n') + '\n';
+}
+
 function maybeNotifyCompletions(tasks) {
   if (!Array.isArray(tasks)) return;
 
@@ -94,6 +132,13 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
 
   if (message.type === 'PIPEDL_BADGE_REFRESH') {
     updateBadge().finally(() => sendResponse({ ok: true }));
+    return true;
+  }
+
+  if (message.type === 'PIPEDL_GET_YT_COOKIES') {
+    exportYouTubeCookiesNetscape()
+      .then((cookiesText) => sendResponse({ ok: true, cookiesText }))
+      .catch((err) => sendResponse({ ok: false, error: err?.message || 'Cookie export failed' }));
     return true;
   }
 
