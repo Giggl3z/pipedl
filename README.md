@@ -19,6 +19,8 @@ cd pipedl
 .\run.ps1
 ```
 
+`run.ps1` now launches the tray server app by default.
+
 Then open **http://localhost:5000** and drop your first URL.
 
 ### Optional: pipedl-server app (recommended for non-technical users)

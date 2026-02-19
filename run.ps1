@@ -1,11 +1,18 @@
 param(
-  [switch]$NoBrowser
+  [switch]$NoBrowser,
+  [switch]$Terminal
 )
 
 $ErrorActionPreference = 'Stop'
 Set-Location $PSScriptRoot
 
-Write-Host '🚀 Starting PipeDL backend...' -ForegroundColor Cyan
+if (-not $Terminal) {
+  Write-Host '🧩 Starting pipedl-server tray app...' -ForegroundColor Cyan
+  & (Join-Path $PSScriptRoot 'run-tray.ps1')
+  exit $LASTEXITCODE
+}
+
+Write-Host '🚀 Starting PipeDL backend (terminal mode)...' -ForegroundColor Cyan
 
 $guiPath = Join-Path $PSScriptRoot 'yt-dlp-gui'
 if (-not (Test-Path $guiPath)) {

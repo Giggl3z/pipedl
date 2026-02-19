@@ -56,6 +56,7 @@ Format inspired by [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Root README copy/style refreshed to better match the PipeDL brand tone while keeping structure intact.
 - README top section polished (hero line, compact badge row, stronger launch CTA copy).
 - `app.py` now supports `--no-debug` / `PIPEDL_DEBUG=0` for stable background and tray execution.
+- `run.ps1` now starts `pipedl-server` tray mode by default; use `-Terminal` for classic terminal backend mode.
 
 ### Fixed
 - Fixed queue deadlock in `/api/download` caused by nested locking during task trimming.
