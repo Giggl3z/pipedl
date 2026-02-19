@@ -39,6 +39,7 @@ Format inspired by [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - README limitations section moved to the bottom and visually de-emphasized.
 - README API/structure sections moved into a dedicated compact reference section at the bottom.
 - Compact reference typography adjusted for readability (no extra mini text styling).
+- README license section moved to the end of the document.
 - Extension popup autofills URL from active YouTube tab.
 - Extension popup now shows live backend server status (online/offline), disables backend actions when offline, and surfaces a clear server-offline hint.
 - Extension badge now shows active queued/running task count.

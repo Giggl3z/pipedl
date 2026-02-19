@@ -161,10 +161,6 @@ Default output folder:
 
 ---
 
-## ⚖️ License
-
-MIT - see [`LICENSE`](LICENSE)
-
 ## ✅ Responsible Use
 
 Use PipeDL in compliance with platform Terms of Service and applicable laws.
@@ -214,3 +210,9 @@ Use PipeDL in compliance with platform Terms of Service and applicable laws.
 
 - Browser extensions cannot execute `yt-dlp` directly (sandbox restriction).
 - Local backend (`yt-dlp-gui`) must be running for extension actions.
+
+---
+
+## ⚖️ License
+
+MIT - see [`LICENSE`](LICENSE)
