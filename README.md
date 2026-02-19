@@ -1,7 +1,7 @@
 # PipeDL
 
 <p align="left">
-  <img src="docs/assets/pipedl-logo-bold.svg" alt="PipeDL logo" width="620" />
+  <img src="docs/assets/pipedl-logo-bold.svg?v=2" alt="PipeDL logo" width="620" />
 </p>
 
 ![Python](https://img.shields.io/badge/Python-3.10%2B-2563EB) ![Brave Extension](https://img.shields.io/badge/Brave-MV3-F97316) ![License](https://img.shields.io/badge/License-MIT-16A34A) ![Status](https://img.shields.io/badge/Status-Active-22C55E)
