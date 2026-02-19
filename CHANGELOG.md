@@ -67,8 +67,6 @@ Format inspired by [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - README setup flow clarified for tray-default startup and added `git pull` note when local copies still launch terminal mode.
 - Web UI default theme restyled toward a YouTube-native dark look (neutral panels, calmer contrast, less glass/glow).
 - Extension popup panel restyled to the same YouTube-native dark palette for visual consistency.
-- Extension popup now uses fixed full-size panel dimensions (non-scroll root layout).
-- Added cookies-from-browser fallback attempts for Chromium profile locking (`brave/chrome/edge` -> `Default` / `Profile 1`) to improve out-of-box auth reliability.
 
 ### Fixed
 - Fixed queue deadlock in `/api/download` caused by nested locking during task trimming.
