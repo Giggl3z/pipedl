@@ -1,7 +1,36 @@
 $ErrorActionPreference = 'Stop'
 Set-Location $PSScriptRoot
 
-Write-Host '🛠 PipeDL setup starting...' -ForegroundColor Cyan
+function Show-PipeDLBanner {
+  $banner = @'
+ ____  _            ____  _      
+|  _ \(_)_ __   ___|  _ \| |     
+| |_) | | '_ \ / _ \ | | | |     
+|  __/| | |_) |  __/ |_| | |___  
+|_|   |_| .__/ \___|____/|_____| 
+        |_|                      
+'@
+  Write-Host $banner -ForegroundColor Cyan
+  Write-Host 'PipeDL Setup Wizard' -ForegroundColor Cyan
+  Write-Host ''
+}
+
+function Assert-Command($name, $hint) {
+  if (-not (Get-Command $name -ErrorAction SilentlyContinue)) {
+    throw "$name is not installed or not on PATH. $hint"
+  }
+}
+
+function Invoke-Step($label, [scriptblock]$action) {
+  Write-Host "→ $label" -ForegroundColor Yellow
+  & $action
+}
+
+Show-PipeDLBanner
+Write-Host 'Tip: Run this script in PowerShell as Administrator for best results.' -ForegroundColor DarkYellow
+Write-Host ''
+
+Assert-Command 'python' 'Install Python 3.10+ from https://python.org and enable "Add python.exe to PATH".'
 
 $guiPath = Join-Path $PSScriptRoot 'yt-dlp-gui'
 if (-not (Test-Path $guiPath)) {
@@ -10,27 +39,32 @@ if (-not (Test-Path $guiPath)) {
 
 Set-Location $guiPath
 
-Write-Host '📦 Installing Python dependencies...' -ForegroundColor Yellow
-python -m pip install --upgrade pip
-python -m pip install -r requirements.txt
+Invoke-Step 'Upgrading pip' { python -m pip install --upgrade pip }
+Invoke-Step 'Installing dependencies from requirements.txt' { python -m pip install -r requirements.txt }
 
 Write-Host ''
 Write-Host '✅ Setup complete!' -ForegroundColor Green
+Write-Host ''
 
-$startupChoice = Read-Host 'Do you want pipedl-server to auto-start when you log in? (Y/N)'
-if ($startupChoice -match '^(y|yes)$') {
+$startupChoice = ''
+do {
+  $startupChoice = (Read-Host 'Auto-start pipedl-server on login? (Y/N)').Trim().ToLowerInvariant()
+} while ($startupChoice -notin @('y', 'yes', 'n', 'no'))
+
+if ($startupChoice -in @('y', 'yes')) {
   try {
     & (Join-Path $PSScriptRoot 'install-tray-autostart.ps1')
   }
   catch {
-    Write-Host "⚠️ Could not install startup task automatically: $($_.Exception.Message)" -ForegroundColor Yellow
+    Write-Host "⚠ Could not install startup task automatically: $($_.Exception.Message)" -ForegroundColor Yellow
     Write-Host 'You can run it later: .\install-tray-autostart.ps1' -ForegroundColor Yellow
   }
 } else {
   Write-Host 'Skipping auto-start setup.' -ForegroundColor DarkYellow
 }
 
+Write-Host ''
 Write-Host 'Next steps:' -ForegroundColor Green
-Write-Host '1) Start server app (tray default): powershell -ExecutionPolicy Bypass -File .\run.ps1'
-Write-Host '2) Terminal mode (optional):      powershell -ExecutionPolicy Bypass -File .\run.ps1 -Terminal'
-Write-Host '3) Load extension: brave://extensions -> Developer mode -> Load unpacked -> yt-dlp-brave-extension'
+Write-Host '  1) Start server app (tray default): powershell -ExecutionPolicy Bypass -File .\run.ps1'
+Write-Host '  2) Terminal mode (optional):      powershell -ExecutionPolicy Bypass -File .\run.ps1 -Terminal'
+Write-Host '  3) Load extension: brave://extensions -> Developer mode -> Load unpacked -> yt-dlp-brave-extension'

@@ -206,6 +206,39 @@
       line-height: 1.55;
     }
 
+    .onboarding {
+      margin: 0 0 14px;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: color-mix(in srgb, var(--panel) 86%, transparent);
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      align-items: start;
+    }
+
+    .onboarding h3 {
+      margin: 0 0 8px;
+      font-size: 13px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .onboarding ol {
+      margin: 0;
+      padding-left: 18px;
+      line-height: 1.5;
+      font-size: 13px;
+    }
+
+    .onboarding .hint {
+      margin-top: 6px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
     .hero-stats {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -656,6 +689,19 @@
       </div>
     </section>
 
+    <section id="onboarding-card" class="onboarding">
+      <div>
+        <h3>Quick onboarding</h3>
+        <ol>
+          <li>Paste a video URL, then keep <strong>Best Mixed</strong> selected for quick starts.</li>
+          <li>Click <strong>Start Download</strong> (or press <strong>Ctrl + Enter</strong>) and watch live progress on the right.</li>
+          <li>Click a task row anytime to inspect logs, retry failures, or cancel active jobs.</li>
+        </ol>
+        <div class="hint">Tip: switch to <strong>Mode: Pro</strong> for exact quality picker and advanced flags.</div>
+      </div>
+      <button id="dismiss-onboarding-btn" class="btn-ghost" type="button">Hide tips</button>
+    </section>
+
     <section class="studio">
       <article class="card">
         <div class="card-header">
@@ -840,6 +886,8 @@
     const formatsMeta = document.getElementById('formats-meta');
     const formatsTbody = document.getElementById('formats-tbody');
     const closeFormatsBtn = document.getElementById('close-formats-btn');
+    const onboardingCard = document.getElementById('onboarding-card');
+    const dismissOnboardingBtn = document.getElementById('dismiss-onboarding-btn');
 
     const outputTemplateInput = document.getElementById('output-template');
     const writeSubsInput = document.getElementById('write-subs');
@@ -877,6 +925,11 @@
       toastEl.classList.add('show');
       clearTimeout(showToast._t);
       showToast._t = setTimeout(() => toastEl.classList.remove('show'), 2200);
+    }
+
+    function setOnboardingVisible(visible) {
+      onboardingCard.style.display = visible ? 'grid' : 'none';
+      localStorage.setItem('pipedl_onboarding_hidden', visible ? '0' : '1');
     }
 
     function applyMode(mode, save = true) {
@@ -932,6 +985,9 @@
         taskFilterInput.value = taskFilter;
         applyMode(prefs.mode || 'simple', false);
       } catch {}
+
+      const hidden = localStorage.getItem('pipedl_onboarding_hidden') === '1';
+      onboardingCard.style.display = hidden ? 'none' : 'grid';
     }
 
     function savePrefs() {
@@ -1266,6 +1322,9 @@
 
       currentTaskId = data.task_id;
       taskHint.textContent = `Task ${currentTaskId.slice(0, 8)} queued.`;
+      if (onboardingCard.style.display !== 'none') {
+        setOnboardingVisible(false);
+      }
       downloadBtn.textContent = 'Downloading...';
 
       if (pollTimer) clearInterval(pollTimer);
@@ -1309,6 +1368,10 @@
     concurrencyInput.addEventListener('change', () => setConcurrency(concurrencyInput.value));
     pickFormatBtn.addEventListener('click', openFormatsModal);
     closeFormatsBtn.addEventListener('click', closeFormatsModal);
+    dismissOnboardingBtn.addEventListener('click', () => {
+      setOnboardingVisible(false);
+      showToast('Onboarding tips hidden');
+    });
     formatsModalBackdrop.addEventListener('click', (e) => {
       if (e.target === formatsModalBackdrop) closeFormatsModal();
     });
