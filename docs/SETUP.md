@@ -48,7 +48,7 @@ git pull
 .\setup.ps1
 ```
 
-During setup, PipeDL asks whether `pipedl-server` should auto-start at login.
+During setup, PipeDL asks whether `pipedl-server` should auto-start at login (Y/N prompt).
 
 Manual path:
 

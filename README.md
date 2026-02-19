@@ -23,6 +23,8 @@ cd pipedl
 
 `run.ps1` launches `pipedl-server` tray mode by default.
 
+`setup.ps1` will still ask if you want `pipedl-server` to auto-run at login.
+
 If `run.ps1` still opens Flask terminal logs, update your local copy first:
 
 ```powershell

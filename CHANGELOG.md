@@ -46,6 +46,7 @@ Format inspired by [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Extension now sends native completion notifications when tasks transition from queued/running to done/error/canceled.
 - `pipedl-server` tray window refreshed with a modern dark UI, accent colors, status indicator dot, and improved log window styling.
 - README and setup docs now explicitly note running setup/start scripts with Administrator rights.
+- Docs now explicitly confirm that setup still prompts for auto-run at login.
 
 ### Changed
 - `/api/download` now enqueues tasks (`queued` status) instead of immediate direct execution.
