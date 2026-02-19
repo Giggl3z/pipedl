@@ -176,13 +176,9 @@ def build_command(url: str, fmt: str, options: dict) -> list[str]:
     if bool(options.get("embedThumbnail")):
         cmd += ["--embed-thumbnail"]
 
-    cookies_from_browser = (options.get("cookiesFromBrowser") or "").strip().lower()
-    if cookies_from_browser in ("brave", "chrome", "edge", "firefox"):
-        cmd += ["--cookies-from-browser", cookies_from_browser]
-    else:
-        cookies_path = (options.get("cookiesPath") or "").strip()
-        if cookies_path:
-            cmd += ["--cookies", cookies_path]
+    cookies_path = (options.get("cookiesPath") or "").strip()
+    if cookies_path:
+        cmd += ["--cookies", cookies_path]
 
     rate_limit = to_rate_limit(options.get("rateLimit") or "")
     if rate_limit:
@@ -366,7 +362,6 @@ def api_download():
             "useArchive": bool(options.get("useArchive", True)),
             "exactFormat": (options.get("exactFormat") or "").strip(),
             "outputTemplate": (options.get("outputTemplate") or "").strip(),
-            "cookiesFromBrowser": (options.get("cookiesFromBrowser") or "").strip().lower(),
             "cookiesPath": (options.get("cookiesPath") or "").strip(),
             "rateLimit": (options.get("rateLimit") or "").strip(),
             "retries": str(options.get("retries") or "").strip(),

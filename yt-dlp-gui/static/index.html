@@ -714,19 +714,7 @@
             </div>
 
             <div class="field" style="margin-top:12px;">
-              <label for="cookies-from-browser">Cookies from browser (recommended for age-restricted/private videos)</label>
-              <select id="cookies-from-browser">
-                <option value="">None (disabled)</option>
-                <option value="brave">Brave</option>
-                <option value="chrome">Chrome</option>
-                <option value="edge">Edge</option>
-                <option value="firefox">Firefox</option>
-              </select>
-              <div class="tiny" style="margin-top:6px;">If enabled, PipeDL uses your local signed-in browser cookies automatically.</div>
-            </div>
-
-            <div class="field" style="margin-top:12px;">
-              <label for="cookies-path">Cookies file path (optional fallback)</label>
+              <label for="cookies-path">Cookies file path (optional)</label>
               <input id="cookies-path" type="text" placeholder="C:\\path\\cookies.txt" />
             </div>
 
@@ -860,7 +848,6 @@
     const autoOpenInput = document.getElementById('auto-open');
     const useArchiveInput = document.getElementById('use-archive');
     const postActionInput = document.getElementById('post-action');
-    const cookiesFromBrowserInput = document.getElementById('cookies-from-browser');
     const cookiesPathInput = document.getElementById('cookies-path');
     const rateLimitInput = document.getElementById('rate-limit');
     const retriesInput = document.getElementById('retries');
@@ -918,7 +905,6 @@
         autoOpenFolder: shouldOpen && autoOpenInput.checked,
         useArchive: useArchiveInput.checked,
         postAction,
-        cookiesFromBrowser: (cookiesFromBrowserInput.value || '').trim(),
         cookiesPath: cookiesPathInput.value.trim(),
         rateLimit: rateLimitInput.value.trim(),
         retries: retriesInput.value.trim(),
@@ -931,7 +917,6 @@
         const prefs = JSON.parse(localStorage.getItem('pipedl_prefs') || '{}');
         if (prefs.theme) applyTheme(prefs.theme, false);
         if (prefs.outputTemplate) outputTemplateInput.value = prefs.outputTemplate;
-        if (prefs.cookiesFromBrowser) cookiesFromBrowserInput.value = prefs.cookiesFromBrowser;
         if (prefs.cookiesPath) cookiesPathInput.value = prefs.cookiesPath;
         if (prefs.rateLimit) rateLimitInput.value = prefs.rateLimit;
         if (prefs.retries) retriesInput.value = prefs.retries;
@@ -1338,7 +1323,7 @@
       }
     });
 
-    [outputTemplateInput, writeSubsInput, embedMetaInput, embedThumbInput, autoOpenInput, useArchiveInput, postActionInput, cookiesFromBrowserInput, cookiesPathInput, rateLimitInput, retriesInput]
+    [outputTemplateInput, writeSubsInput, embedMetaInput, embedThumbInput, autoOpenInput, useArchiveInput, postActionInput, cookiesPathInput, rateLimitInput, retriesInput]
       .forEach(el => el.addEventListener('change', savePrefs));
 
     loadPrefs();
