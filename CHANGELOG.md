@@ -60,7 +60,7 @@ Format inspired by [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - Fixed queue deadlock in `/api/download` caused by nested locking during task trimming.
 - Better queue visibility in UI status hint (shows queued position before running).
 - Moved `pipedl_archive.txt` out of the Downloads output folder into `~/.pipedl/` to keep downloads clean.
-- Adjusted YouTube in-page PipeDL button injection to use a non-layout floating host near the action row, avoiding crop/overflow side effects on native YouTube buttons.
+- Adjusted YouTube in-page PipeDL button wrapper/sizing to avoid cropping or visual breakage of adjacent YouTube action buttons.
 
 ## [2026-02-18]
 
