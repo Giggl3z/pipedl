@@ -19,7 +19,11 @@ DEFAULT_CONCURRENCY = 2
 # Save downloads to local machine Downloads folder (outside workspace)
 DOWNLOAD_DIR = os.path.join(os.path.expanduser("~"), "Downloads", "PipeDL")
 os.makedirs(DOWNLOAD_DIR, exist_ok=True)
-ARCHIVE_FILE = os.path.join(DOWNLOAD_DIR, "pipedl_archive.txt")
+
+# Keep archive metadata outside Downloads to avoid cluttering user output folder
+APP_DATA_DIR = os.path.join(os.path.expanduser("~"), ".pipedl")
+os.makedirs(APP_DATA_DIR, exist_ok=True)
+ARCHIVE_FILE = os.path.join(APP_DATA_DIR, "pipedl_archive.txt")
 
 TASKS: dict[str, dict] = {}
 TASK_QUEUE: list[str] = []

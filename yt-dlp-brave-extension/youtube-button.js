@@ -1,5 +1,6 @@
 (() => {
   const BUTTON_ID = 'aerodl-yt-action-btn';
+  const BUTTON_HOST_ID = 'aerodl-yt-action-host';
   const MENU_ID = 'aerodl-yt-menu';
   const STYLE_ID = 'aerodl-yt-style';
 
@@ -107,25 +108,34 @@
     const style = document.createElement('style');
     style.id = STYLE_ID;
     style.textContent = `
-      #${BUTTON_ID} {
+      #${BUTTON_HOST_ID} {
+        display: inline-flex;
+        align-items: center;
         margin-left: 8px;
-        border-radius: 18px;
-        border: 1px solid rgba(255,255,255,.18);
-        padding: 0 12px;
-        height: 36px;
-        min-width: 92px;
+        flex: 0 0 auto;
+      }
+
+      #${BUTTON_ID} {
+        border-radius: 999px;
+        border: 1px solid rgba(255,255,255,.16);
+        padding: 0 10px;
+        height: 32px;
+        min-width: 86px;
         cursor: pointer;
         background: rgba(255,255,255,.08);
         color: #f1f1f1;
         font-weight: 500;
-        font-size: 14px;
+        font-size: 13px;
+        line-height: 32px;
         font-family: Roboto, Arial, sans-serif;
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        gap: 8px;
+        gap: 6px;
         transition: transform .18s ease, background .15s ease, box-shadow .18s ease;
         animation: aerodlBtnIn .22s ease;
+        box-sizing: border-box;
+        white-space: nowrap;
       }
       #${BUTTON_ID} .aerodl-btn-icon {
         width: 16px;
@@ -418,7 +428,10 @@
     document.addEventListener('keydown', onMenuKeydown, true);
   }
 
-  function createButton() {
+  function createButtonHost() {
+    const host = document.createElement('div');
+    host.id = BUTTON_HOST_ID;
+
     const btn = document.createElement('button');
     btn.id = BUTTON_ID;
     btn.type = 'button';
@@ -442,7 +455,9 @@
         createMenu(btn);
       }
     });
-    return btn;
+
+    host.appendChild(btn);
+    return host;
   }
 
   function findTarget() {
@@ -465,9 +480,9 @@
 
     const target = findTarget();
     if (!target) return;
-    if (document.getElementById(BUTTON_ID)) return;
+    if (document.getElementById(BUTTON_HOST_ID) || document.getElementById(BUTTON_ID)) return;
 
-    target.appendChild(createButton());
+    target.appendChild(createButtonHost());
   }
 
   injectStyles();
