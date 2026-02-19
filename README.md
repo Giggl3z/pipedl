@@ -19,7 +19,15 @@ cd pipedl
 .\run.ps1
 ```
 
-`run.ps1` now launches the tray server app by default.
+`run.ps1` launches `pipedl-server` tray mode by default.
+
+If `run.ps1` still opens Flask terminal logs, update your local copy first:
+
+```powershell
+git pull
+```
+
+Then run `.\run.ps1` again.
 
 Then open **http://localhost:5000** and drop your first URL.
 
@@ -111,7 +119,11 @@ python app.py
 ## 🧭 First-Time Setup Checklist
 
 ### 1) Start backend
-Run `python app.py` (or `run.ps1`) and keep terminal open.
+Run `.\run.ps1` to start `pipedl-server` (tray mode).
+
+Optional terminal mode:
+- `.\run.ps1 -Terminal`
+- or `python app.py` inside `yt-dlp-gui`
 
 ### 2) Load extension in Brave
 1. Open `brave://extensions`

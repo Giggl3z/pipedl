@@ -57,6 +57,7 @@ Format inspired by [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - README top section polished (hero line, compact badge row, stronger launch CTA copy).
 - `app.py` now supports `--no-debug` / `PIPEDL_DEBUG=0` for stable background and tray execution.
 - `run.ps1` now starts `pipedl-server` tray mode by default; use `-Terminal` for classic terminal backend mode.
+- README setup flow clarified for tray-default startup and added `git pull` note when local copies still launch terminal mode.
 
 ### Fixed
 - Fixed queue deadlock in `/api/download` caused by nested locking during task trimming.
