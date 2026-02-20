@@ -6,15 +6,19 @@ $ErrorActionPreference = 'Stop'
 Set-Location $PSScriptRoot
 
 function Show-PipeDLBanner {
-  $banner = @'
- ____  _            ____  _      
-|  _ \(_)_ __   ___|  _ \| |     
-| |_) | | '_ \ / _ \ | | | |     
-|  __/| | |_) |  __/ |_| | |___  
-|_|   |_| .__/ \___|____/|_____| 
-        |_|                      
-'@
-  Write-Host $banner -ForegroundColor Cyan
+  $lines = @(
+    '######  ###  ######  ####### ######  #      ',
+    '#    #   #   #    #  #       #    #  #      ',
+    '######   #   ######  #####   #    #  #      ',
+    '#        #   #       #       #    #  #      ',
+    '#       ###  #       ####### ######  #######',
+    '                                          A  '
+  )
+  $colors = @('DarkMagenta','Magenta','DarkBlue','Blue','Cyan','White')
+  for ($i = 0; $i -lt $lines.Count; $i++) {
+    Write-Host $lines[$i] -ForegroundColor $colors[$i]
+  }
+  Write-Host '[ Style A | Gradient Banner ]' -ForegroundColor DarkCyan
 }
 
 function Assert-Command($name, $hint) {
