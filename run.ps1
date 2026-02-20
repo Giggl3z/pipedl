@@ -29,7 +29,7 @@ Assert-Command 'python' 'Install Python 3.10+ from https://python.org and enable
 
 if (-not $Terminal) {
   Write-Host '🧩 Starting pipedl-server tray app...' -ForegroundColor Cyan
-  & (Join-Path $PSScriptRoot 'run-tray.ps1')
+  & (Join-Path $PSScriptRoot 'run-tray.ps1') -NoBanner
   exit $LASTEXITCODE
 }
 

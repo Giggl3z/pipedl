@@ -1,3 +1,7 @@
+param(
+  [switch]$NoBanner
+)
+
 $ErrorActionPreference = 'Stop'
 Set-Location $PSScriptRoot
 
@@ -19,7 +23,9 @@ function Assert-Command($name, $hint) {
   }
 }
 
-Show-PipeDLBanner
+if (-not $NoBanner) {
+  Show-PipeDLBanner
+}
 Assert-Command 'python' 'Install Python 3.10+ from https://python.org and enable PATH option.'
 Write-Host '🧩 Starting pipedl-server...' -ForegroundColor Cyan
 
